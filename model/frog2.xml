@@ -1,0 +1,74 @@
+<mujoco model="frog">
+    <compiler angle="degree"/> 
+
+    <default>
+        <joint limited="true" damping="1" armature="0"/>
+        <geom condim="1" material="matgeom"/>
+        <motor ctrlrange="-.4 .4" ctrllimited="true"/>
+    </default>
+
+    <option timestep="0.005" iterations="50" tolerance="1e-10" solver="Newton" jacobian="dense" cone="pyramidal" gravity="0 0 0"/>
+
+    <size nconmax="50" njmax="200" nstack="10000"/>
+
+    <visual>
+        <map force="0.1" zfar="30"/>
+        <rgba haze="0.15 0.25 0.35 1"/>
+        <quality shadowsize="2048"/>
+        <global offwidth="800" offheight="800"/>
+    </visual>
+
+    <asset>
+        <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="512"/>
+
+        <texture name="texplane" type="2d" builtin="checker" rgb1=".2 .3 .4" rgb2=".1 0.15 0.2" width="512" height="512" mark="cross" markrgb=".8 .8 .8"/>
+
+        <texture name="texgeom" type="cube" builtin="flat" mark="cross" width="127" height="1278"
+            rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" markrgb="1 1 1" random="0.01"/>
+
+        <material name="matplane" reflectance="0.3" texture="texplane" texrepeat="1 1" texuniform="true"/>
+
+        <material name="matgeom" texture="texgeom" texuniform="true" rgba="0.8 0.6 .4 1"/>
+    </asset>
+
+    <worldbody> 
+       <body name="frog"> 
+            <freejoint/>
+        <body name="central_body" pos="0 0 0.5">
+            
+            <geom type="box" size="0.2 0.1 0.05" rgba="0.8 0.6 0.4 1"/>
+
+            <!-- First Leg -->
+            <body name="left_leg" pos="0.225 0 0">
+                <joint name="left_piston" type="slide" pos="0 0 -1" axis="0 0 1" range="0 0.5"/>
+                <joint name="left_shoulder" type="hinge" pos="0.225 0 -0.5" axis="1 0 0" range="-30 30" limited="true" />
+                <geom type="capsule" size="0.05 0.5" pos="0 0 -0.5"/>
+                <body name="left_foot" pos="0.225 0 0"> 
+                    <geom type="box" size="0.1 0.2 0.02" pos= "-0.225 0 -1.04" />
+                    <joint name="left_ankle" type="hinge" pos="-0.225 0 -1.04" axis="1 0 0" range="-30 30" limited="true" />
+                </body>
+            </body>
+
+            <!-- Second Leg -->
+            <body name="right_leg" pos="-0.225 0 0">
+                <joint name="right_piston" type="slide" pos="0 0 -1" axis="0 0 1" range="0 0.5"/>
+                <joint name="right_shoulder" type="hinge" pos="-0.225 0 -0.5" axis="1 0 0" range="-30 30" limited="true" />
+                <geom type="capsule" size="0.05 0.5" pos="0 0 -0.5"/>
+                <body name="right_foot" pos="-0.225 0 0"> 
+                    <geom type="box" size="0.1 0.2 0.02" pos= "0.225 0 -1.04" />
+                    <joint name="right_ankle" type="hinge" pos="0.225 0 -1.04" axis="1 0 0" range="-30 30" limited="true" />
+                </body>
+            </body>
+        </body>
+        </body>
+    </worldbody> 
+
+<actuator> 
+     <motor name="left piston" joint="left_piston" gear="100"/>
+        <motor name ="right piston" joint="right_piston" gear="100"/>
+
+        <motor name="left shoulder" joint="left_shoulder" gear="100"/>
+        <motor name="right shoulder" joint="right_shoulder" gear="100"/>
+   <motor name="left ankle" joint="left_ankle" gear="100"/>
+</actuator>
+</mujoco> 
